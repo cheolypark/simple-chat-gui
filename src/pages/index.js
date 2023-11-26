@@ -1,11 +1,88 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import ChatInterface from '@/Chat'
+import {useMSGStore} from "@/Chat/store/messages"
+import {useActorsStore} from '@/Chat/store/actors'
+import {useEffect} from "react"
 
 const inter = Inter({ subsets: ['latin'] })
 
+
 export default function Home() {
+  const [setMessage, updateMessage] = useMSGStore((s) => [s.setMessage, s.updateMessage])
+  const [setActors] = useActorsStore((s) => [s.setActors])
+
+  useEffect(() => {
+    setActors({
+      "Bot" : {
+        name: "Bot",
+        type: "Bot",
+        image: "https://res.cloudinary.com/duvaex4uc/image/upload/v1688500304/janraqbmycariuow6jus.webp"
+      },
+      "James" : {
+        name: "James",
+        type: "User",
+        image: "https://res.cloudinary.com/duvaex4uc/image/upload/v1683490676/hwepwcxy7vxp7y6gltrp.webp"
+      },
+    })
+  }, [])
+
+
+  function addRandomMessage() {
+    let random = Math.random() < 0.5;
+    let test1 = (Math.random() + 1).toString(36).substring(7);
+    let test2 = (Math.random() + 1).toString(36).substring(7);
+
+    setMessage({
+      actor: random ? "James" : "Bot",
+      contents: [
+        {
+          contentType: "text",
+          content: test1,
+        },
+        {
+          contentType: "text",
+          content: test2,
+        }
+      ]
+    })
+  }
+
+  function addDelayedMessage() {
+    let random = Math.random() < 0.5;
+    let test = (Math.random() + 1).toString(36).substring(7);
+
+    let index = setMessage({
+      actor: random ? "James" : "Bot",
+      loading: true,
+      contents: [
+        {
+          contentType: "text",
+          content: test,
+        }
+      ]
+    })
+
+    function showTime() {
+      let dateTime= new Date();
+      let time = dateTime.toLocaleTimeString();
+
+      updateMessage(index, {
+        actor: random ? "James" : "Bot",
+        loading: false,
+        contents: [
+          {
+            contentType: "text",
+            content: time,
+          }
+        ]
+      })
+    }
+
+    setInterval(showTime, 2000);
+  }
+
   return (
     <>
       <Head>
@@ -15,98 +92,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
+
         <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.js</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
+          <ChatInterface/>
         </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
-
         <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
+            <button onClick={()=>addRandomMessage()}>Add Message</button>
+            <button onClick={()=>addDelayedMessage()}>Delayed Message</button>
         </div>
       </main>
     </>

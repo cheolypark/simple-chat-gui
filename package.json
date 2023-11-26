@@ -9,8 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "clsx": "^2.0.0",
+    "katex": "^0.16.9",
+    "modern-normalize": "^2.0.0",
+    "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.0.3"
+    "react-markdown": "^9.0.1",
+    "react-player": "^2.13.0",
+    "rehype-highlight": "^7.0.0",
+    "rehype-katex": "^7.0.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "sass": "^1.69.5",
+    "scss": "^0.2.4",
+    "zustand": "^4.4.6"
   }
 }
